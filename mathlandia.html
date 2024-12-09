@@ -3,31 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mathlandia</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Math-O-Polis</title>
+    <link rel="stylesheet" href="world.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
 </head>
 <body>
     <header class="mathlandia-header">
-        <h1>Mathlandia</h1>
+        <h1>Math-O-Polis</h1>
         <p>Conquer numbers and solve mysteries!</p>
     </header>
     <main>
         <section>
             <h2>Challenges</h2>
             <div class="challenge-container">
-                <button onclick="startChallenge('Math Puzzle')">Math Puzzle</button>
-                <button onclick="startChallenge('Number Quiz')">Number Quiz</button>
-                <button onclick="startChallenge('Geometry Game')">Geometry Game</button>
+                <button onclick="window.location.href = 'math_puzzle.html'">Math Puzzle</button>
+                <button onclick="window.location.href = 'number_quiz.html'">Number Quiz</button>
+                <button onclick="window.location.href = 'geometry_quiz.html'">Geometry Game</button>
             </div>
         </section>
     </main>
     <footer>
         <a href="index.html" class="back-link">Back to Home</a>
     </footer>
-    <script>
-        function startChallenge(name) {
-            alert(`Starting ${name}! Prepare for fun!`);
-        }
-    </script>
 </body>
 </html>

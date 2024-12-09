@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grammar Quest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* styles.css */
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background-color: #f7f0e6;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #ff8c00;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        main {
+            margin-top: 20px;
+        }
+
+        #quest-container {
+            margin: 20px 0;
+        }
+
+        #question {
+            font-size: 1.5rem;
+            color: #444;
+        }
+
+        #options {
+            list-style: none;
+            padding: 0;
+        }
+
+        #options li {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #fff8dc;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #options li:hover {
+            background-color: #ffdead;
+        }
+
+        #options li.correct {
+            background-color: #32cd32;
+            color: white;
+            font-weight: bold;
+        }
+
+        #options li.incorrect {
+            background-color: #ff6347;
+            color: white;
+            font-weight: bold;
+        }
+
+        #feedback {
+            margin: 20px 0;
+        }
+
+        #feedback-message {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        button {
+            font-size: 1rem;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #4682b4;
+            color: white;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        button:hover {
+            background-color: #5a9bd3;
+        }
+
+        #start-screen p {
+            font-size: 1.2rem;
+            color: #444;
+            margin: 10px 0;
+        }
+
+        #start-screen button {
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #4682b4;
+            color: white;
+            cursor: pointer;
+        }
+
+        #start-screen button:hover {
+            background-color: #5a9bd3;
+        }
+
+        #next-quest {
+            display: none;
+            margin-left: 300px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Grammar Quest 📝</h1>
+        </header>
+        <main>
+            <!-- Start Quest Screen -->
+            <div id="start-screen">
+                <h3>Welcome to Grammar Quest! 🧙‍♂️</h3>
+                <p>Test your grammar skills and become a Grammar Wizard!</p>
+                <button id="start-quest">Start Quest</button>
+            </div>
+
+            <!-- Game Screen -->
+            <div id="quest-container" style="display: none;">
+                <h2 id="question">Loading question...</h2>
+                <ul id="options"></ul>
+            </div>
+
+            <!-- Feedback -->
+            <div id="feedback" style="display: none;">
+                <p id="feedback-message"></p>
+            </div>
+
+            <!-- Navigation -->
+            <button id="next-quest" style="display: none;">Next Quest</button>
+        </main>
+    </div>
+    <script>// scripts.js
+
+        const quests = [
+            {
+                question: "Select the correct plural form of 'Child':",
+                options: ['Childs', 'Children', 'Childes', 'Childrens'],
+                answer: 'Children'
+            },
+            {
+                question: "Choose the correct past tense of 'Run':",
+                options: ['Running', 'Runned', 'Ran', 'Runs'],
+                answer: 'Ran'
+            },
+            {
+                question: "Identify the noun in this sentence: 'The cat is sleeping.'",
+                options: ['Cat', 'Sleeping', 'Is', 'The'],
+                answer: 'Cat'
+            },
+            {
+                question: "Which of these is an adjective?",
+                options: ['Quickly', 'Happy', 'Run', 'Jump'],
+                answer: 'Happy'
+            },
+            {
+                question: "What is the opposite of 'Fast'?",
+                options: ['Quick', 'Slow', 'Stop', 'Walk'],
+                answer: 'Slow'
+            },
+            {
+                question: "Select the correct spelling:",
+                options: ['Accomodate', 'Accommodate', 'Acomodate', 'Acomadate'],
+                answer: 'Accommodate'
+            },
+            {
+                question: "What is the past tense of 'Go'?",
+                options: ['Went', 'Goes', 'Gone', 'Goed'],
+                answer: 'Went'
+            },
+            {
+                question: "Which sentence uses the correct verb tense?",
+                options: [
+                    'She run fast every morning.',
+                    'She runs fast every morning.',
+                    'She running fast every morning.',
+                    'She is runs fast every morning.'
+                ],
+                answer: 'She runs fast every morning.'
+            },
+            {
+                question: "Which of these is a preposition?",
+                options: ['Quickly', 'With', 'Dog', 'Blue'],
+                answer: 'With'
+            },
+            {
+                question: "Choose the correct article for this sentence: 'I saw ___ elephant at the zoo.'",
+                options: ['A', 'An', 'The', 'None'],
+                answer: 'An'
+            }
+        ];
+
+        let currentQuestIndex = 0;
+        let isStarted = false;
+
+        document.getElementById('start-quest').addEventListener('click', startQuest);
+
+        function startQuest() {
+            isStarted = true;
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('quest-container').style.display = 'block';
+            loadQuest();
+        }
+
+        function loadQuest() {
+            const quest = quests[currentQuestIndex];
+            const questionElement = document.getElementById('question');
+            const optionsElement = document.getElementById('options');
+
+            questionElement.textContent = quest.question;
+            optionsElement.innerHTML = '';
+
+            quest.options.forEach(option => {
+                const li = document.createElement('li');
+                li.textContent = option;
+                li.addEventListener('click', () => checkAnswer(li, option));
+                optionsElement.appendChild(li);
+            });
+
+            document.getElementById('feedback-message').textContent = '';
+            document.getElementById('next-quest').style.display = 'none';
+        }
+
+        function checkAnswer(optionElement, selectedAnswer) {
+            const quest = quests[currentQuestIndex];
+            const feedbackMessage = document.getElementById('feedback-message');
+            const options = document.querySelectorAll('#options li');
+
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect');
+                option.removeEventListener('click', () => { });
+            });
+
+            if (selectedAnswer === quest.answer) {
+                optionElement.classList.add('correct');
+                feedbackMessage.textContent = `🎉 Correct! The answer is "${quest.answer}".`;
+                feedbackMessage.style.color = 'green';
+            } else {
+                optionElement.classList.add('incorrect');
+                feedbackMessage.textContent = `❌ Oops! The correct answer is "${quest.answer}".`;
+                feedbackMessage.style.color = 'red';
+            }
+
+            document.getElementById('feedback').style.display = 'block';
+            document.getElementById('next-quest').style.display = 'block';
+        }
+
+        document.getElementById('next-quest').addEventListener('click', () => {
+            currentQuestIndex = (currentQuestIndex + 1) % quests.length;
+            loadQuest();
+        });
+
+    </script>
+</body>
+
+</html>

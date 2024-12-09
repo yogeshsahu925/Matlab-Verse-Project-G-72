@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Geometry Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: linear-gradient(360deg, rgb(58, 12, 117), rgb(144, 0, 255));
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            padding: 2.16vw;
+        }
+
+        header h1 {
+            color: #fdfdff;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-family: 'Press Start 2P', cursive;
+            ;
+        }
+
+        #quiz-section {
+            margin: 20px auto;
+            padding: 15px;
+            background: #bde0fe;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 50%;
+        }
+
+        #quiz-question {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        #user-answer {
+            font-size: 1rem;
+            padding: 8px;
+            border: 2px solid #5854d7;
+            border-radius: 5px;
+            width: 80%;
+            font-family: 'Press Start 2P', cursive;
+            text-align: center;
+        }
+
+        button {
+            font-size: 1rem;
+            padding: 10px 15px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #32cd32;
+            color: white;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        button:hover {
+            background-color: #228b22;
+        }
+
+        #feedback-section {
+            font-size: 1.2rem;
+            margin: 10px;
+            color: #ff4500;
+        }
+        footer{
+            color: #edf3f8;
+        }
+
+        #reward-section {
+            margin: 20px;
+            padding: 10px;
+            background: #8a4e09;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            color: #edf3f8;
+        }
+
+        #badge-section {
+            margin-top: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #ffd700;
+            color: #fff;
+            font-size: 1rem;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 5px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨GEOMETRY QUIZ FUN🎨</h1>
+        </header>
+        <main>
+            <div id="quiz-section">
+                <p id="quiz-question">Click "Start Quiz" to begin!</p>
+                <input type="text" id="user-answer" placeholder="Your Answer" disabled>
+                <button id="submit-answer" disabled>Submit</button>
+            </div>
+            <div id="feedback-section"></div>
+            <div id="reward-section">
+                <p>🎯 Score: <span id="score">0</span></p>
+                <p>⭐ Streak: <span id="streak">0</span></p>
+                <div id="badge-section"></div>
+            </div>
+            <button id="next-quiz">Start Quiz</button>
+        </main>
+        <footer>
+            <p>Made with ❤️ for kids to learn geometry!</p>
+        </footer>
+    </div>
+    <script>
+        const quizzes = [
+            { question: "How many sides does a triangle have?", answer: "3" },
+            { question: "What is the name of a 5-sided shape?", answer: "Pentagon" },
+            { question: "How many degrees are there in a circle?", answer: "360" },
+            { question: "What is the name of a shape with 8 sides?", answer: "Octagon" },
+            { question: "How many faces does a cube have?", answer: "6" },
+            { question: "What is the name of a 4-sided shape with equal sides?", answer: "Square" },
+            { question: "How many corners does a rectangle have?", answer: "4" },
+            { question: "What is the name of a triangle with all equal sides?", answer: "Equilateral" },
+            { question: "How many edges does a pyramid have?", answer: "8" },
+            { question: "What is the name of a 3D circle?", answer: "Sphere" }
+        ];
+
+        let currentQuizIndex = 0;
+        let score = 0;
+        let streak = 0;
+
+        function startQuiz() {
+            const quizQuestion = document.getElementById('quiz-question');
+            const answerInput = document.getElementById('user-answer');
+            const submitButton = document.getElementById('submit-answer');
+
+            answerInput.disabled = false;
+            submitButton.disabled = false;
+
+            const { question } = quizzes[currentQuizIndex];
+            quizQuestion.textContent = question;
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('user-answer').value.trim();
+            const feedback = document.getElementById('feedback-section');
+            const scoreDisplay = document.getElementById('score');
+            const streakDisplay = document.getElementById('streak');
+            const badgeSection = document.getElementById('badge-section');
+            const correctAnswer = quizzes[currentQuizIndex].answer.toLowerCase();
+
+            if (userAnswer.toLowerCase() === correctAnswer) {
+                feedback.textContent = "🎉 Correct! Great job!";
+                feedback.style.color = "White";
+                score += 10;
+                streak++;
+            } else {
+                feedback.textContent = `❌ Incorrect! The correct answer was "${quizzes[currentQuizIndex].answer}".`;
+                feedback.style.color = "Red";
+                streak = 0;
+            }
+
+            // Update score and streak
+            scoreDisplay.textContent = score;
+            streakDisplay.textContent = streak;
+
+            // Award badges
+            if (streak === 3) {
+                badgeSection.innerHTML += `<div class="badge">🌟 3-Streak Genius!</div>`;
+            } else if (streak === 5) {
+                badgeSection.innerHTML += `<div class="badge">🏆 5-Streak Master!</div>`;
+            }
+
+            // Disable the input and submit button after an answer
+            document.getElementById('user-answer').disabled = true;
+            document.getElementById('submit-answer').disabled = true;
+
+            // Move to the next question
+            currentQuizIndex = (currentQuizIndex + 1) % quizzes.length;
+        }
+
+        document.getElementById('next-quiz').addEventListener('click', startQuiz);
+        document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cosmic Puzzle: Solar System Explorer</title>
+    <style>
+        :root {
+            --dark-background: #0a0a1a;
+            --primary-color: #4a4e69;
+            --accent-color: #9c27b0;
+            --highlight-color: #03a9f4;
+            --correct-color: #4caf50;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, var(--dark-background) 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        .cosmic-container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .title {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(45deg, var(--highlight-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(3, 169, 244, 0.5);
+        }
+
+        #game-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            perspective: 1000px;
+        }
+
+        .planet-slot, .planet-piece {
+            width: 140px;
+            height: 140px;
+            border: 3px dashed rgba(74, 78, 105, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            border-radius: 15px;
+            position: relative;
+            background: rgba(74, 78, 105, 0.1);
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .planet-piece {
+            background: linear-gradient(145deg, var(--primary-color), #6a4c93);
+            color: white;
+            font-weight: bold;
+            user-select: none;
+            border: 2px solid var(--primary-color);
+            transform: translateZ(50px);
+        }
+
+        .planet-piece:hover {
+            transform: translateZ(80px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .planet-slot.correct {
+            background: radial-gradient(circle, rgba(76, 175, 80, 0.2), rgba(76, 175, 80, 0.1));
+            border-color: var(--correct-color);
+            animation: cosmic-pulse 2s infinite alternate;
+        }
+
+        @keyframes cosmic-pulse {
+            0% {
+                transform: scale(1) rotate(0deg);
+                box-shadow: 0 0 10px var(--correct-color), 0 0 20px var(--correct-color);
+            }
+            100% {
+                transform: scale(1.02) rotate(2deg);
+                box-shadow: 0 0 20px var(--correct-color), 0 0 40px var(--correct-color);
+            }
+        }
+
+        .planet-piece.dragging {
+            opacity: 0.7;
+            transform: translateZ(30px) rotate(5deg);
+        }
+
+        #info-display {
+            background: rgba(106, 76, 147, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            max-width: 600px;
+            backdrop-filter: blur(10px);
+        }
+
+        #planet-fact {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            max-width: 700px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #planet-fact::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                transparent,
+                transparent 20px,
+                rgba(255,255,255,0.05) 20px,
+                rgba(255,255,255,0.05) 40px
+            );
+            animation: cosmic-background 10s linear infinite;
+        }
+
+        @keyframes cosmic-background {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fact-tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            width: 300px;
+            z-index: 10;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .planet-slot.correct:hover .fact-tooltip {
+            display: block;
+            animation: tooltip-slide 0.3s ease;
+        }
+
+        @keyframes tooltip-slide {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .reset-btn {
+            background: linear-gradient(145deg, var(--highlight-color), var(--accent-color));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="cosmic-container">
+        <h1 class="title">Cosmic Puzzle: Solar System Explorer</h1>
+        <div id="game-container"></div>
+        <div id="info-display">Drag the planets to their correct order from the Sun!</div>
+        <div id="planet-fact"></div>
+        <button class="reset-btn" onclick="resetGame()">Reset Cosmic Puzzle</button>
+    </div>
+
+    <script>
+        const planets = [
+            { 
+                name: 'Mercury', 
+                orderFromSun: 1,
+                fact: "Mercury is the smallest planet in our solar system and is closest to the Sun. Its surface temperature can range from -180°C to 430°C!",
+                color: '#8C7853'
+            },
+            { 
+                name: 'Venus', 
+                orderFromSun: 2,
+                fact: "Venus is the hottest planet in our solar system, with surface temperatures reaching 462°C. It rotates backwards compared to other planets!",
+                color: '#FFA500'
+            },
+            { 
+                name: 'Earth', 
+                orderFromSun: 3,
+                fact: "Earth is the only known planet to support life. About 71% of its surface is covered in water, making it the 'Blue Planet'.",
+                color: '#4169E1'
+            },
+            { 
+                name: 'Mars', 
+                orderFromSun: 4,
+                fact: "Mars is known as the 'Red Planet' due to its reddish appearance. It has the largest volcano in the solar system, Olympus Mons!",
+                color: '#B22222'
+            },
+            { 
+                name: 'Jupiter', 
+                orderFromSun: 5,
+                fact: "Jupiter is the largest planet in our solar system. It has a Great Red Spot, which is a giant storm that has been raging for over 350 years!",
+                color: '#D2691E'
+            },
+            { 
+                name: 'Saturn', 
+                orderFromSun: 6,
+                fact: "Saturn is famous for its spectacular ring system. These rings are made of ice, rock, and dust, and are only about 10 meters thick!",
+                color: '#F5DEB3'
+            },
+            { 
+                name: 'Uranus', 
+                orderFromSun: 7,
+                fact: "Uranus is the only planet that rotates on its side, causing extreme seasonal variations. It appears to roll like a ball as it orbits!",
+                color: '#00CED1'
+            },
+            { 
+                name: 'Neptune', 
+                orderFromSun: 8,
+                fact: "Neptune is the windiest planet, with wind speeds reaching up to 2,100 km/h. It has a Great Dark Spot similar to Jupiter's Great Red Spot!",
+                color: '#4682B4'
+            }
+        ];
+
+        let selectedPiece = null;
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function createGameBoard() {
+            const container = document.getElementById('game-container');
+            container.innerHTML = '';
+
+            const shuffledPlanets = shuffleArray([...planets]);
+
+            shuffledPlanets.forEach(planet => {
+                const planetPiece = document.createElement('div');
+                planetPiece.className = 'planet-piece';
+                planetPiece.textContent = planet.name;
+                planetPiece.draggable = true;
+                planetPiece.dataset.orderFromSun = planet.orderFromSun;
+                planetPiece.style.background = `linear-gradient(145deg, ${planet.color}, ${getLighterShade(planet.color)})`;
+
+                planetPiece.addEventListener('dragstart', dragStart);
+                planetPiece.addEventListener('dragend', dragEnd);
+
+                container.appendChild(planetPiece);
+            });
+
+            planets.forEach(planet => {
+                const planetSlot = document.createElement('div');
+                planetSlot.className = 'planet-slot';
+                planetSlot.dataset.orderFromSun = planet.orderFromSun;
+
+                const factTooltip = document.createElement('div');
+                factTooltip.className = 'fact-tooltip';
+                factTooltip.textContent = planet.fact;
+                planetSlot.appendChild(factTooltip);
+
+                planetSlot.addEventListener('dragover', dragOver);
+                planetSlot.addEventListener('drop', drop);
+
+                container.appendChild(planetSlot);
+            });
+
+            document.getElementById('planet-fact').textContent = '';
+        }
+
+        function getLighterShade(color) {
+            const hex = color.replace('#', '');
+            const num = parseInt(hex, 16);
+            const amt = 50;
+            const R = (num >> 16) + amt;
+            const B = ((num >> 8) & 0x00FF) + amt;
+            const G = (num & 0x0000FF) + amt;
+            return `#${(0x1000000 + (R<255?R<1?0:R:255)*0x10000 +
+                    (B<255?B<1?0:B:255)*0x100 +
+                    (G<255?G<1?0:G:255)).toString(16).slice(1)}`;
+        }
+
+        function dragStart(e) {
+            selectedPiece = e.target;
+            e.target.classList.add('dragging');
+        }
+
+        function dragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            const targetSlot = e.target.closest('.planet-slot');
+            
+            if (targetSlot && selectedPiece) {
+                if (targetSlot.dataset.orderFromSun === selectedPiece.dataset.orderFromSun) {
+                    targetSlot.textContent = selectedPiece.textContent;
+                    targetSlot.classList.add('correct');
+                    
+                    const planetName = selectedPiece.textContent;
+                    const planetFact = planets.find(p => p.name === planetName).fact;
+                    document.getElementById('planet-fact').textContent = `${planetName} Fact: ${planetFact}`;
+                    
+                    selectedPiece.remove();
+                    checkGameCompletion();
+                }
+            }
+        }
+
+        function checkGameCompletion() {
+            const correctSlots = document.querySelectorAll('.planet-slot.correct');
+            const infoDisplay = document.getElementById('info-display');
+
+            if (correctSlots.length === planets.length) {
+                infoDisplay.textContent = 'Cosmic Congratulations! You solved the Solar System Puzzle! 🌟🚀';
+                document.getElementById('planet-fact').textContent = 'You are now a Solar System Expert! Explore the wonders of our cosmic neighborhood!';
+            }
+        }
+
+        function resetGame() {
+            createGameBoard();
+            document.getElementById('info-display').textContent = 'Drag the planets to their correct order from the Sun!';
+        }
+
+        createGameBoard();
+    </script>
+</body>
+</html>

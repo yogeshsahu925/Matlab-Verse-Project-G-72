@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry Quest</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0077b6, #90e0ef);
+            color: #fff;
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #023e8a;
+        }
+        header h1 {
+            font-size: 2.5em;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+        .card {
+            background-color: #caf0f8;
+            color: #023e8a;
+            border-radius: 10px;
+            width: 300px;
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .question, .result {
+            display: none;
+        }
+        button {
+            background-color: #0077b6;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        button:hover {
+            background-color: #023e8a;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Chemistry Quest</h1>
+        <p>Learn Chemistry with fun and interactive questions!</p>
+    </header>
+    <div class="container">
+        <div id="welcome">
+            <div class="card">
+                <h2>Welcome to Chemistry Quest!</h2>
+                <p>Are you ready to test your knowledge of chemistry?</p>
+                <button onclick="startQuiz()">Start Quiz</button>
+            </div>
+        </div>
+        <div id="question-section" class="question">
+            <div class="card">
+                <h2 id="question-text"></h2>
+                <div id="answers"></div>
+            </div>
+        </div>
+        <div id="result-section" class="result">
+            <div class="card">
+                <h2 id="result-text"></h2>
+                <button onclick="restartQuiz()">Restart Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                text: "What is the chemical symbol for water?",
+                options: ["H2O", "O2", "CO2"],
+                answer: "H2O"
+            },
+            {
+                text: "What is the atomic number of Carbon?",
+                options: ["6", "12", "14"],
+                answer: "6"
+            },
+            {
+                text: "What gas do plants absorb during photosynthesis?",
+                options: ["Oxygen", "Nitrogen", "Carbon Dioxide"],
+                answer: "Carbon Dioxide"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function startQuiz() {
+            document.getElementById('welcome').style.display = 'none';
+            document.getElementById('question-section').style.display = 'block';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const questionElement = document.getElementById('question-text');
+            const answersElement = document.getElementById('answers');
+            const question = questions[currentQuestion];
+
+            questionElement.textContent = question.text;
+            answersElement.innerHTML = '';
+
+            question.options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.onclick = () => checkAnswer(option);
+                answersElement.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selected) {
+            if (selected === questions[currentQuestion].answer) {
+                score++;
+            }
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('question-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'block';
+            const resultText = document.getElementById('result-text');
+            resultText.textContent = `You scored ${score} out of ${questions.length}!`;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('result-section').style.display = 'none';
+            document.getElementById('welcome').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

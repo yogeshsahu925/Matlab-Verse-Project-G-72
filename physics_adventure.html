@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Physics Adventure: Learn & Explore!</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
+
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #5DDCAE;
+            --accent-color: #FF6B6B;
+            --background-color: #F7F9FC;
+            --text-color: #2C3E50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--background-color), #E6E9F0);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            perspective: 1000px;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transform: rotateX(10deg);
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .score-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score-badge i {
+            animation: pulse 1.5s infinite;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-container {
+            background: linear-gradient(145deg, #F0F4F8, #E6EAF0);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .question {
+            font-size: 1.3rem;
+            color: var(--text-color);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transform: translateZ(20px);
+        }
+
+        .option:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.05) translateZ(30px);
+            box-shadow: 0 10px 20px rgba(74, 144, 226, 0.2);
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: all 0.6s;
+        }
+
+        .option:hover::before {
+            left: 100%;
+        }
+
+        #feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .correct {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .incorrect {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        #nextButton {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        #nextButton:hover {
+            background: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @media (max-width: 600px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1>Physics Quest</h1>
+            <div class="score-badge">
+                <i class="fas fa-trophy"></i> 
+                Score: <span id="currentScore">0</span>
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div id="questionText" class="question"></div>
+            <div id="optionsContainer" class="options"></div>
+        </div>
+        
+        <div id="feedback"></div>
+        <button id="nextButton" style="display:none;">Next Challenge</button>
+    </div>
+
+    <script>
+        const physicsQuestions = [
+            {
+                question: "What is the acceleration due to gravity on Earth?",
+                options: ["9.8 m/s²", "6.7 m/s²", "5.5 m/s²", "8.2 m/s²"],
+                correctAnswer: "9.8 m/s²",
+                explanation: "Gravity on Earth is consistently measured at 9.8 m/s², which determines how fast objects fall near Earth's surface."
+            },
+            {
+                question: "Which law states that every action has an equal and opposite reaction?",
+                options: ["Newton's First Law", "Newton's Second Law", "Newton's Third Law", "Archimedes' Law"],
+                correctAnswer: "Newton's Third Law",
+                explanation: "Newton's Third Law describes how forces always come in pairs - when one object exerts a force on another, the second object exerts an equal force back."
+            },
+            {
+                question: "What is the formula for kinetic energy?",
+                options: ["E = mc²", "KE = ½mv²", "F = ma", "P = mv"],
+                correctAnswer: "KE = ½mv²",
+                explanation: "Kinetic energy depends on both mass and velocity, calculated by multiplying half the mass by velocity squared."
+            },
+            {
+                question: "What is the speed of light in vacuum?",
+                options: ["300,000 km/s", "250,000 km/s", "200,000 km/s", "350,000 km/s"],
+                correctAnswer: "300,000 km/s",
+                explanation: "Light travels at an incredible 300,000 kilometers per second in a vacuum, a fundamental constant in physics."
+            },
+            {
+                question: "What does E = mc² represent?",
+                options: ["Momentum", "Energy-Mass Equivalence", "Gravity", "Acceleration"],
+                correctAnswer: "Energy-Mass Equivalence",
+                explanation: "Einstein's revolutionary equation shows that mass and energy are fundamentally interchangeable."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedback = document.getElementById('feedback');
+        const nextButton = document.getElementById('nextButton');
+        const currentScoreElement = document.getElementById('currentScore');
+
+        function initializeGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const currentQuestion = physicsQuestions[currentQuestionIndex];
+            
+            questionText.textContent = currentQuestion.question;
+            
+            optionsContainer.innerHTML = '';
+            currentQuestion.options.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option');
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => checkAnswer(option));
+                optionsContainer.appendChild(optionElement);
+            });
+
+            feedback.textContent = '';
+            nextButton.style.display = 'none';
+            currentScoreElement.textContent = score;
+        }
+
+        function checkAnswer(selectedOption) {
+            const currentQuestion = physicsQuestions[currentQuestionIndex];
+            const optionElements = document.querySelectorAll('.option');
+
+            optionElements.forEach(el => {
+                el.style.pointerEvents = 'none';
+            });
+
+            if (selectedOption === currentQuestion.correctAnswer) {
+                score++;
+                feedback.textContent = `Correct! 🎉 ${currentQuestion.explanation}`;
+                feedback.classList.add('correct');
+                currentScoreElement.textContent = score;
+            } else {
+                feedback.textContent = `Incorrect. 😕 ${currentQuestion.explanation} The correct answer is: ${currentQuestion.correctAnswer}`;
+                feedback.classList.add('incorrect');
+            }
+
+            nextButton.style.display = 'block';
+            nextButton.addEventListener('click', nextQuestion);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            feedback.textContent = '';
+            feedback.classList.remove('correct', 'incorrect');
+
+            if (currentQuestionIndex < physicsQuestions.length) {
+                loadQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            const percentage = Math.round((score / physicsQuestions.length) * 100);
+            const gameContainer = document.querySelector('.game-container');
+            
+            gameContainer.innerHTML = `
+                <h1>Physics Quest Completed!</h1>
+                <div class="question-container">
+                    <h2>Your Scientific Journey</h2>
+                    <p>Score: ${score} / ${physicsQuestions.length}</p>
+                    <p>Percentage: ${percentage}%</p>
+                    <p>${getPerformanceMessage(percentage)}</p>
+                </div>
+                <button onclick="location.reload()" style="
+                    background: var(--primary-color);
+                    color: white;
+                    border: none;
+                    padding: 12px 25px;
+                    border-radius: 25px;
+                    cursor: pointer;
+                    font-weight: bold;
+                ">Restart Quest</button>
+            `;
+        }
+
+        function getPerformanceMessage(percentage) {
+            if (percentage >= 80) return "🏆 Physics Genius! Einstein would be proud!";
+            if (percentage >= 60) return "👍 Great job! You're mastering physics!";
+            if (percentage >= 40) return "🌟 Good effort! Keep exploring science!";
+            return "📚 Keep studying. Your physics journey is just beginning!";
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeGame);
+    </script>
+</body>
+</html>
