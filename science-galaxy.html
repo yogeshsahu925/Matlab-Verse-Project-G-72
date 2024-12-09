@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Science Galaxy</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="science-galaxy-header">
+        <h1>Science Galaxy</h1>
+        <p>Explore the cosmos and discover scientific wonders!</p>
+    </header>
+    <main>
+        <section>
+            <h2>Missions</h2>
+            <div class="challenge-container">
+                <button onclick="startMission('Planetary Puzzle')">Planetary Puzzle</button>
+                <button onclick="startMission('Physics Adventure')">Physics Adventure</button>
+                <button onclick="startMission('Chemistry Quest')">Chemistry Quest</button>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <a href="index.html" class="back-link">Back to Home</a>
+    </footer>
+    <script>
+        function startMission(name) {
+            alert(`Embarking on ${name}! Get ready to explore!`);
+        }
+    </script>
+</body>
+</html>
