@@ -4,9 +4,282 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learning Quest</title>
-    <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
+<style>
+    /* General Styles */
+body {
+    font-family: 'Press Start 2P', cursive;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    text-align: center;
+    min-height: 49vw;
+}
+body {
+    background-image: url('back.png');
+    background-size: cover; /* Makes the image cover the entire screen */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    background-position: center center; /* Centers the image */
+    background-attachment: fixed; /* Keeps the background fixed during scrolling */
+    margin: 0;
+    padding: 0;
+    font-family: 'Press Start 2P', cursive;
+}
+
+header {
+    background: linear-gradient(135deg,  #d10489,blue);
+    padding: 2px;
+    text-align: center;
+    color: white;
+    background-size: 400% 400%; /* Enlarges the gradient for smooth transitions */
+    animation: continuousColorChange 5s infinite linear;
+    padding: 2px;
+}
+
+/* Keyframes for smooth continuous background change */
+@keyframes continuousColorChange {
+    0% {
+        background-position: 0% 50%;
+    }
+    25% {
+        background-position: 50% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    75% {
+        background-position: 50% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+header p{
+    font-size: 0.9em;
+}
+
+h1 {
+    font-family: 'Press Start 2P', cursive;
+    margin: 0;
+    font-size: 2.5em;
+    padding: 15px;
+}
+
+/* Main Content */
+main {
+    padding: 20px;
+}
+
+.worlds h1 {
+    font-size: 30px;
+    padding: 40px;
+    color: rgb(253, 253, 2);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 1.4);}
+.worlds h4 {
+    font-size: 20px;
+}
+.worlds {
+    margin: 20px auto;
+    max-width: 800px;
+
+}
+
+.world-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.world {
+    border: 2px solid #264653;
+    border-radius: 10px;
+    padding: 15px;
+    background-color: #e9c46a;
+    width: 150px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+}
+
+.world img {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+}
+
+.world:hover {
+    transform: scale(1.1);
+    background-color: #f4a261;
+}
+
+/* Footer */
+footer {
+    background-color: #264653;
+    color: white;
+    padding: 2px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Pop-up Modal */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup.hidden {
+    display: none;
+}
+
+.popup-content {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+    animation: pop 0.3s ease-out;
+}
+
+@keyframes pop {
+    from {
+        transform: scale(0.8);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+.popup-close {
+    float: right;
+    cursor: pointer;
+    font-size: 1.5em;
+    color: #333;
+}
+
+.popup h2 {
+    font-family: 'Press Start 2P', cursive;
+    margin: 0;
+    color: #2a9d8f;
+}
+
+.popup button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #2a9d8f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.popup button:hover {
+    background-color: #264653;
+}
+
+/* Hamburger Icon */
+.hamburger-icon {
+    position: fixed;
+    top: 20px;
+    left: 25px;
+    font-size: 30px;
+    cursor: pointer;
+    z-index: 100;
+    color: white;
+    transition: transform 0.3s ease-in-out;
+}
+
+.hamburger-icon:hover {
+    transform: scale(1.2);
+}
+
+/* Menu Content */
+.menu-content {
+    position: fixed;
+    top: 0px;
+    left: -275px; /* Hidden by default */
+    width: 260px;
+    box-shadow: 5px 0 10px rgba(0, 0, 0, 0.2);
+    height: 100%;
+    color: white;
+    padding: 5px;
+    z-index: 99;
+    transition: left 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.menu-content{
+    background-image: url('back2.png');
+    background-size: cover; /* Makes the image cover the entire screen */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    background-position: center center; /* Centers the image */
+    background-attachment: fixed; /* Keeps the background fixed during scrolling */
+    margin: 0;
+    padding: 0;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.menu-content h2 {
+    font-family: 'Press Start 2P', cursive;
+    margin-bottom: 10px;
+    margin-top: 85px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.982);
+    font-size: 30px;
+}
+.menu-content h5 {
+    font-family: 'Press Start 2P', cursive;
+    margin-bottom: 20px;
+    padding-right: 5px;
+    color: gold;
+    font-size: 18px;
+    
+}
+
+.menu-content ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.menu-content ul li {
+    margin: 10px ;
+    text-align: left;
+    padding-right: 15px;
+}
+
+.menu-content ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2em;
+    transition: color 0.3s;
+}
+
+.menu-content ul li a:hover {
+    color: rgb(0, 255, 183);
+}
+
+/* Menu Open State */
+.menu-open {
+    left: 0;
+}
+
+</style>
 <body>
     <header>
         <h1>[ LEARNING QUEST ] </h1>
@@ -14,25 +287,40 @@
     </header>
     <main>
         <section class="worlds">
-            <h1><<u>SELECT YOUR WORLD</u>></h1>
+            <h1>< SELECT YOUR WORLD ></h1>
+      
             <div class="world-container">
-                <div class="world" onclick="openPopup('Mathopolis', 'mathlandia.html')">
-                    <img src="math-icon.png" alt="Mathopolis">
-                    <h4>Math-O-Polis</h4>
-                </div>
                 <div class="world" onclick="openPopup('Science Galaxy', 'science-galaxy.html')">
                     <img src="science-icon.png" alt="Science Galaxy">
                     <h4>Science Galaxy</h4>
+                </div>
+                <div class="world" onclick="openPopup('Mathopolis', 'mathlandia.html')">
+                    <img src="math-icon.png" alt="Mathopolis">
+                    <h4>Math-O-Polis</h4>
                 </div>
                 <div class="world" onclick="openPopup('Reading Forest', 'reading-forest.html')">
                     <img src="reading-icon.png" alt="Reading Forest">
                     <h4>Reading Forest</h4>
                 </div>
             </div>
+            <div class="hamburger-menu">
+                <div class="hamburger-icon" onclick="toggleMenu()">
+                    &#9776;
+                </div>
+                <div class="menu-content" id="menuContent">
+                    <h2><u><b>MADE BY</b></u></u>:</h2>
+                    <h5><<u>MANAV TIWARI</u>></h5>
+                    <ul>
+                        <li><a href="https://www.linkedin.com/in/Manav-Tiwari" target="_blank">-> LinkedIn</a></li>
+                        <li><a href="https://github.com/Manav-Tiwari" target="_blank">->  GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+            
         </section>
     </main>
     <footer>
-        <p>Made with ❤️ for kids, to learn in an Engaging way !</p>
+        <p>Made with ❤️ for kids, to learn in an Engaging way!</p>
     </footer>
 
     <!-- Pop-up Modal -->
@@ -45,6 +333,33 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        function openPopup(world, redirectUrl) {
+    const popup = document.getElementById('popup');
+    const popupTitle = document.getElementById('popup-title');
+    const popupText = document.getElementById('popup-text');
+    const popupButton = document.getElementById('popup-button');
+
+    popupTitle.textContent = `Welcome to ${world}!`;
+    popupText.textContent = `Solve challenges in ${world} to earn rewards and progress in your adventure.`;
+    popupButton.onclick = () => {
+        window.location.href = redirectUrl;
+    };
+
+    popup.classList.remove('hidden');
+}
+
+document.getElementById('popup-close').onclick = function () {
+    document.getElementById('popup').classList.add('hidden');
+};
+function toggleMenu() {
+    const menu = document.getElementById("menuContent");
+    if (menu.classList.contains("menu-open")) {
+        menu.classList.remove("menu-open");
+    } else {
+        menu.classList.add("menu-open");
+    }
+}
+    </script>
 </body>
 </html>
